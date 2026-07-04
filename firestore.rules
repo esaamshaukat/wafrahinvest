@@ -1,0 +1,31 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function isOwner(uid) { return signedIn() && request.auth.uid == uid; }
+    function isAdmin() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    match /users/{uid} {
+      allow read, create, update: if isOwner(uid) || isAdmin();
+      allow delete: if isAdmin();
+      match /transactions/{txId} {
+        allow read, write: if isOwner(uid) || isAdmin();
+      }
+    }
+
+    match /public/{docId} {
+      allow read: if signedIn();
+      allow write: if isAdmin();
+    }
+
+    match /meezan/{docId} {
+      allow read: if signedIn();
+      allow write: if isAdmin();
+    }
+
+  }
+}

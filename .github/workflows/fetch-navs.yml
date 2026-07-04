@@ -1,0 +1,24 @@
+﻿name: Fetch Wafrah Public NAVs
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '30 13 * * 1-5'
+
+jobs:
+  fetch-navs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip requests firebase-admin beautifulsoup4 pandas lxml
+      - name: Fetch and write NAVs to Firestore
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+          FIREBASE_CLIENT_EMAIL: ${{ secrets.FIREBASE_CLIENT_EMAIL }}
+          FIREBASE_PRIVATE_KEY: ${{ secrets.FIREBASE_PRIVATE_KEY }}
+        run: python fetch_navs.py

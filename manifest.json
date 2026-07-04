@@ -1,0 +1,9 @@
+{
+  "name": "Wafrah Public",
+  "short_name": "Wafrah",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#07110f",
+  "theme_color": "#16a34a",
+  "icons": []
+}
