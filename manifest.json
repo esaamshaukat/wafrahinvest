@@ -1,6 +1,6 @@
 {
-  "name": "Wafrah Public",
-  "short_name": "Wafrah",
+  "name": "Wafrah 2.0",
+  "short_name": "Wafrah 2.0",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#07110f",
