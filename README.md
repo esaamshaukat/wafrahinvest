@@ -77,3 +77,27 @@ python backfill_navs.py --start 2025-07-01 --include-weekends
 ```
 
 The backfill writes `meezan/portfolio.navHistory`, `public/navHistory.navHistory`, `meezan/fyHistory`, `public/fyHistory`, and the latest available NAVs into `meezan/navs` and `public/navs`.
+
+## Admin-Assisted Password Reset
+
+This app includes a callable Firebase Cloud Function named `adminResetPassword`. It lets a signed-in Wafrah admin set a temporary password for a user from the Admin tab. The function verifies the caller's `users/{uid}.role` is `admin`, updates the user's Firebase Auth password with the Admin SDK, and marks the user with `forcePasswordChange: true` so they are sent to Settings to choose their own password after signing in.
+
+Deploy the function and rules from this folder:
+
+```powershell
+cd D:\ClaudeProject\Wafrah_Public
+npm --prefix functions install
+firebase deploy --project wafrah2 --only functions,firestore:rules
+```
+
+If Firebase asks, enable Cloud Functions for the project. Functions may require the Firebase project to be on the Blaze plan.
+
+Use the reset flow like this:
+
+1. Open Wafrah as an admin.
+2. Go to Admin > User Logins.
+3. Verify the user by mobile number or another trusted channel.
+4. Enter a temporary password twice and click Set Temp Password.
+5. Tell the user the temporary password. On sign-in, Wafrah will ask them to change it.
+
+Existing users created before mobile-number signup may show "No mobile saved". Add their mobile number in Firestore under their `users/{uid}` document if you want mobile-based verification for them.
